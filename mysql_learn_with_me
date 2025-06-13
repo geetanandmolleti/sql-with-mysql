@@ -1,0 +1,254 @@
+create database batman; -- creating data base   
+use batman; -- use make the sql to understand that it execute all the commands in the db being used 
+create table details( -- create used to create a databade 
+  id int primary key,  -- followed by column ,attribute type 
+  name varchar(50), -- same here 
+  age int not null); --  same here
+  insert into details values (1,"geetanand",20); -- example  on how to insert values in created table ,to view modification click on I on details db then click on columns
+  select * from details ; -- to print the table execute this command
+   --   ABOUT DATA TYPES 
+   -- CHAR is like array ,there is chance of storage wastage,but VARCHAR  saves storage by reserving unused data 
+   -- blob is used to store largee strings
+   -- tinyint and big int are used accordingly
+   -- similarly we can store bit ,int ,float,double (decimal with 24-53 digits),boolean,date and year
+   -- types of sql commands 1.DDL(create alter rename drop truncate)2.DQL (SELECT) 3. DML(INSERT ,UPDATE ,DELETE)4.DCL(GRANT ,REVOKE)5.TCL(commit,rollback,,etc)
+   -- IF NOT EXISTS keyword for creation
+   create database if not exists batman;
+   create database if not exists batman1;
+   -- IF EXISTS keyword for drop
+   drop database if exists batman1;
+   -- SHOW keyword shows all tables used in that particular db
+   show databases;
+   show tables;
+   -- inserting data into table ,be careful and dont leave any column values as mostly we dont set default values in tables ,so we need to enter all attributes 
+   insert into details
+   (id , name,age) 
+   values
+   (3,"jon snow",25),
+   (4,"bruce wayne",25);
+   select * from details ;-- to check results
+   insert into details   values   (5,"jaimie",25); -- inserting siingular row data
+   -- check about keys ,in general a primary key ,foreign key(consists of colums which aare themselves primary key of other tables0000
+   -- constraints = "NOT NULL", "UNIQUE","PRIMARY KEY" ,USED TO SPECIFY IN A COLUMN ASSIGNING LIKE AGE SHOULDNT BE NULL ,,,,etc
+   -- we can make  a combination of 2 columns uniquely as a primary key
+   -- since foriegn key is used in multiple tables ,we use REFERENCES comstraints  ex := foreign key(vsad) references customer id,this prevents the destruction of links between tables ,like here customer is table name ,id is attribute
+   -- DEFAULT keywords sets default value to the column
+   -- CHECK constraits puts value restriction ,ex := age int check(age>18)
+   #demonstration of some of above commands 
+  drop database batman_returns;
+   create database batman_returns;
+   use batman_returns;
+   create table dark_knight(
+   rollno int primary key
+   , name varchar(50),
+   score int,
+   city varchar(50));
+   
+   insert into dark_knight
+   (rollno, name, score, city)
+   values
+   (1 ,"geetanand",100,"vizag"),
+   (2,"jaimie lannister",99,"westeros"),
+   (3,"bruce wayne", 100,"gotham");   
+   -- learning about SELECT keyword syntax := [ select [col1, col2] from TABLE_NAME;]
+   select name ,score from dark_knight;
+   -- try SELECT DISTINCT COL1 FROM TABLE_NAME TO GET distinct or non repeating values from table
+   -- WHERE clause is like check constraint ,which gives rule to select keyword example below
+   select name,score from dark_knight where score>99;
+   -- limit clause sets limit to number of rows which shall be displayed 
+   select name,score from dark_knight limit 2;
+   select name,score from dark_knight where score>99  limit 2;
+   
+   -- sometimes we want to order values by ascending or descending order so use this syntax
+   -- select col from tanble_name oreder by asc / desc
+   select name,score from dark_knight order by score asc;
+   select name,score from dark_knight order by score desc;
+   
+   
+   -- aggregate functions used to calculate math termenlogies in table 
+   -- example COUNT,MAX ,MIN , SUM ,AVG
+   #example 
+   select min(score) from dark_knight;
+   
+   
+   -- GROUP BY keyword groups multiple rows of similar data type
+   select score, count(name) from dark_knight group by score;
+   
+   
+   -- HAVING clause is similar to WHERE clause but here we can apply rules on groups rather than rows
+   select count(name),score from dark_knight group by score having score = 100;
+   
+   -- this app dont allow us to update tables as it thinks we may fuck it up so use below code 
+   set sql_safe_updates = 0;-- to turn on use 1
+    -- UPDATE keyword used to update the talbe in DB
+    update dark_knight set name = "kingslayer" where name = "jaimie lannister";
+    select * from dark_knight;
+    
+    
+    -- delete command is used to delete row
+    delete from dark_knight where score = 99;
+     select * from dark_knight;
+     insert into dark_knight
+      (rollno, name,score,city) 
+	 values
+     
+      (4,"jon snow",25,"north"),
+       (5,"kingslayer",25,"westroes");
+       select * from dark_knight;
+       -- cascading for foriegn key means changing the data in both the tables involving foriegn key
+       -- examples := update and delete with cascade
+       use batman;
+       create table course(
+       id int primary key,
+       courseID int,
+       name varchar(50));
+       
+       
+       create table student(
+       id int primary key,
+       courseID int,
+       foreign key (courseID) references course(id)
+       on delete cascade
+       on update cascade);
+       -- check by adding elements
+       
+       
+        -- table related queries
+        -- ALTER - used to change schema or design
+        -- the below comes under alter
+        -- ADD, DROP,RENAME,CHANGE ,MODIFY
+        use batman_returns;
+        alter table dark_knight
+        add column referenced varchar(50);
+        select * from dark_knight;
+        -- added successfully
+		alter table dark_knight
+        drop column referenced;
+        select * from dark_knight;
+        -- dropped  SUCESSFULY ,TRY OTHERS TOO
+        
+        
+        -- TRUNCATE is used to delete tables data
+        -- since i cannot delelete data just see syntax := truncate table tale_name
+        
+        
+        
+        -- JOIN keyword is used t merge rows of  different tables and extract common information
+        -- types of joins - "inner join" "outer join" "left join" "right join" "full"
+        -- syntax 
+        #select column(S)
+        #from table_a_name
+        #(type of join like inner ,left right,full,etc) table_b_name
+        #on table_a_ column_name = table_b_column_name
+        -- example
+        use batman_returns;
+        create table table_a(
+        student_id int primary key,
+        name varchar(50)
+        );
+        
+        insert into table_a
+        (student_id , name)
+        values
+        (1,"adam "),
+        (2, "cassy"),
+        (3, "bob"),
+        (5, "starc");
+        
+        select * from table_a;
+        
+        create table table_b(
+        id int,
+        foreign key (id) references table_a (student_id),
+        course varchar(50)
+        );
+       
+        
+         insert into table_b
+        (id , course)
+        values
+        (1,"math"),
+        (2,"ml"),
+        (3,"ml");
+        
+        select * from table_b;
+        
+        SELECT 
+        table_a.student_id,
+        table_a.name,
+        table_b.course
+        FROM 
+          table_a
+         INNER JOIN 
+           table_b
+          ON 
+          table_a.student_id = table_b.id;
+
+        -- we can use alias ,like naming a table with other name ex:= select * from student as s ,the below is another approach of join
+        select * from table_a as s
+        inner join table_b  as s2
+        on s.student_id = s2.id;
+        
+        -- left join 
+        select * from table_a as s
+        left join table_b  as s2
+        on s.student_id = s2.id;
+        -- ***for full join we union right and left joins*** 
+        -- FULL JOIN = RIGHT JOIN U LEFT JOIN
+        -- EXAMPLE
+        select * from table_a as s
+        left join table_b  as s2
+        on s.student_id = s2.id
+        union
+        select * from table_a as s
+        right join table_b  as s2
+        on s.student_id = s2.id;
+        
+        -- learn about right exclusive join (right part without its common area with left circular part) 
+        -- learn about left exclusive join (left part without its common area with right circular part) 
+        select * from table_a as s
+        left join table_b  as s2
+        on s.student_id = s2.id
+        where s2.id is null;
+        
+        
+        SELECT * 
+        FROM table_a AS s2
+        RIGHT JOIN table_b AS s
+        ON s2.student_id = s.id
+        WHERE s.id IS NULL;
+        
+        -- JOIN keyword is used to join itself again  note := here "alias" are important 
+         SELECT * 
+        FROM table_a AS s2
+		JOIN table_a AS s
+        ON s2.student_id = s.name;
+        
+        
+        
+        -- SQL SUB QUERIES are sql queries which are written in nested another query
+        -- we can write our sub queries in  THHESE FORMAT [1) select 2)from 3)where]
+        -- example SELECT NAME,MARKS FROM STUDENT WHERE MARKS > (SELECT AVG(MARKS) FROM STUDENT)--> THIS PART IS SU QUERY WHERE BRACKETS ARE MUST
+        SELECT NAME,MARKS
+        FROM STUDENT
+        WHERE MARKS > (SELECT AVG(MARKS) FROM STUDENT);
+        
+        -- ADD ELEMENTS AND CREATE TABLE TO EXECUTE ThIS
+        
+        
+        
+        
+        
+        
+        
+        
+        -- view is a virtual table ( in sql table are real ,change in table reflects in database but view is an virtual table ,any change in them wont reflect on database
+        -- as example bank salesman must need details of customers but not on their transaction so we create a view with needed details so salesman gets its access and make it safer
+        create view view_2 as
+        select id, course from table_b;
+        
+        
+        select * from view_2;
+        
+        drop view view_2;-- to delete view 
+        select * from view_2;-- deleted sucessfully 
